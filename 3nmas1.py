@@ -1,23 +1,35 @@
-def cycle_length(n):
-    length = 1
-    while n != 1:
-        if n % 2 == 0:
-            n = n//2
-        else:
-            n = 3*n+1
-        length += 1
-    return length
-def max(i,j):
-    max_len=0
-    for num in range(i,j+1):
-        current=cycle_length(num)
-        if current > max_len:
-            max_len = current
-    return max_len
+'''
+20180113	jlhung	v1.0
+'''
+
+a = {}
+
+def cal(x):
+	if x in a:
+		return a[x]
+	
+	if x <= 1:
+		return 1
+	
+	if x % 2 == 1:
+		y = 3 * x + 1
+	else:
+		y = x // 2
+	
+	a[x] = cal(y) + 1
+	return a[x]
 
 while True:
-    i,j = map(int,input().split())
-    if i > 10000 or j > 10000 or i < 0 or j < 0:
-        break
-    max_len = max(i,j)
-    print(i,j,max_len)
+	try:
+		x, y = map(int, input().split())
+	except EOFError:
+		break
+
+	max_cycle = 0
+	for i in range(min(x, y), max(x, y) + 1):
+		n = cal(i)
+			
+		if n > max_cycle:
+			max_cycle = n
+	
+	print(x, y, max_cycle)

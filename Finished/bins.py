@@ -23,7 +23,6 @@ for bins in bottles:
     bins = [bins[:3], bins[3:6], bins[6:]]
     order, movements = min_movements(bins)
     results.append((order, movements))
-print(bins)
 for order, movements in results:
     print(order, movements)
 
