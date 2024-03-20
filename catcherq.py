@@ -5,7 +5,6 @@ Err = False
 lines = sys.stdin.readlines()
 data = [int(number) for number in lines]
 data_index = 0
-
 while Err == False:
     if data[data_index] == -1:
         break
