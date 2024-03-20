@@ -8,10 +8,10 @@ def c_movements(bins, order):
                 total_movements += bin_counts
     return total_movements
 def min_movements(bins):
-    min_movements = float('inf')
+    min_movements = float('inf')#infinito
     min_order = None
     for order in ['BCG', 'BGC', 'CBG', 'CGB', 'GBC', 'GCB']:
-        movements = c_movements(bins, order)
+        movements = c_movements(bins, order) #cantidad de movimiento para ese orden especifico
         if movements < min_movements or (movements == min_movements and order < min_order):
             min_movements = movements
             min_order = order
