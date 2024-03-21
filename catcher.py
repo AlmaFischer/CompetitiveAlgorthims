@@ -1,6 +1,9 @@
 
 test=1
 Err=False
+import sys
+lines = sys.stdin.readlines()
+data = [int(number) for number in lines]
 while Err == False:
     incoming_missile= int(input())
     if incoming_missile <= -1:

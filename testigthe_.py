@@ -43,7 +43,6 @@ while data_index < len(data):
             data_index += 1
             break
         if data[data_index] > 32767 or data[data_index] < -1:
-            print("Invalid input. Please make sure the numbers are in the range [-1, 32767].")
             exit()
         if data[data_index] <= last:
             last = data[data_index]
