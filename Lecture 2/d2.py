@@ -20,17 +20,17 @@ def cross(p1, p2, circle):
         return False
     return True
 
-if __name__ == "__main__":
-    gbarU = Point(52.0, 3.66)
-    gbarD = Point(52.0, -3.66)
-    t = int(input())
-    for _ in range(t):
-        input()
-        raul_x, raul_y  = map(float, input().split())
-        golee_x, golee_y, golee_r = map(float, input().split())
-        raul = Point(raul_x, raul_y)
-        golee = Circle(Point(golee_x, golee_y), golee_r)
-        if cross(raul, gbarU, golee) and cross(raul, gbarD, golee):
-            print("No goal...")
-        else:
-            print("Goal!")
+
+barUP = Point(52.0, 3.66)
+barDOWN = Point(52.0, -3.66)
+t = int(input())
+for _ in range(t):
+    input()
+    raul_x, raul_y  = map(float, input().split())
+    golee_x, golee_y, golee_r = map(float, input().split())
+    raul = Point(raul_x, raul_y)
+    golee = Circle(Point(golee_x, golee_y), golee_r)
+    if cross(raul, barUP, golee) and cross(raul, barDOWN, golee):
+        print("No goal...")
+    else:
+        print("Goal!")
