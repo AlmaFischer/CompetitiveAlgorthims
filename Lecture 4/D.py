@@ -18,7 +18,7 @@ def largest_square(grid, r, c):
             break
         else:
             return side
-    return 1  # default size if no square is found
+    return 1
 
 T = int(input())
 for _ in range(T):

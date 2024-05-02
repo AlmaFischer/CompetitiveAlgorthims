@@ -1,70 +1,61 @@
-def find_solution(size, values, pieces, used):
-    if size == 0:
-        return values[0] == values[1]
-    if size == 1:
-        for i in range(len(pieces)):
-            if not used[i]:
-                if (pieces[i][0] == values[0] and pieces[i][1] == values[1]) or \
-                        (pieces[i][0] == values[1] and pieces[i][1] == values[0]):
-                    return True
-        return False
-    
-    possible = False
-    
-    for i in range(len(pieces)):
-        if not used[i]:
-            temp = [0, 0]
-            
-            if pieces[i][0] == values[0]:
-                temp[0] = pieces[i][1]
-            elif pieces[i][1] == values[0]:
-                temp[0] = pieces[i][0]
-            else:
-                continue
-            
-            used[i] = True
-            for j in range(len(pieces)):
-                if not used[j]:
-                    if pieces[j][0] == values[1]:
-                        temp[1] = pieces[j][1]
-                    elif pieces[j][1] == values[1]:
-                        temp[1] = pieces[j][0]
-                    else:
-                        continue
-                    
-                    used[j] = True
-                    possible = find_solution(size - 2, temp, pieces, used)
-                    used[j] = False
-            used[i] = False
-        
-        if possible:
-            break
-    
-    return possible
+class DiggerOctaves:
+    max_len = 8
+    dx = [0, 0, -1, 1]
+    dy = [1, -1, 0, 0]
 
-def main():
-    while True:
-        n = int(input())
-        if n == 0:
-            break
-        
-        ignore = input().split()
-        values = [int(ignore[1]), int(ignore[2])]
-        
-        m = int(input())
-        ignore = input()
-        
-        pieces = []
-        for _ in range(m):
-            piece = list(map(int, input().split()))
-            pieces.append(piece)
-        
-        used = [False] * m
-        
-        if find_solution(n, values, pieces, used):
-            print("YES")
-        else:
-            print("NO")
+    @staticmethod
+    def check(bit_set, n, x, y):
+        if x < 0 or x >= n or y < 0 or y >= n:
+            return False
+        return (bit_set >> (x * n + y)) & 1 == 0
+
+    @staticmethod
+    def calculate(bit_set, n, start_x, start_y, length, result_set):
+        # success
+        if length == 0:
+            result_set.add(bit_set)
+            return
+
+        # try
+        for i in range(len(DiggerOctaves.dx)):
+            x = start_x + DiggerOctaves.dx[i]
+            y = start_y + DiggerOctaves.dy[i]
+            if DiggerOctaves.check(bit_set, n, x, y):
+                k = x * n + y
+                bit_set ^= 1 << k
+                DiggerOctaves.calculate(bit_set, n, x, y, length - 1, result_set)
+                bit_set ^= 1 << k
+
+    @staticmethod
+    def main():
+        test_cases = int(input())
+        for _ in range(test_cases):
+            n = int(input())
+
+            bit_set = 0
+            for _ in range(n):
+                row = input()
+                for j in range(len(row)):
+                    if row[j] != 'X':
+                        bit_set ^= 1 << (_ * n + j)
+
+            # special case
+            if n < 3:
+                print(0)
+                continue
+
+            # calculate
+            result_set = set()
+            length = DiggerOctaves.max_len
+            for i in range(n):
+                for j in range(n):
+                    k = i * n + j
+                    if not (bit_set >> k) & 1:
+                        bit_set ^= 1 << k
+                        DiggerOctaves.calculate(bit_set, n, i, j, length - 1, result_set)
+                        bit_set ^= 1 << k
+            print(len(result_set))
+
 
 if __name__ == "__main__":
-    main()
+    DiggerOctaves.main()

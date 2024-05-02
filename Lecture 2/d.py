@@ -9,6 +9,7 @@ def isgoal(ball_x, ball_y, arquero_x, arquero_y, radioarquero):
 
 num_cases = int(input())
 for caso in range(num_cases):
+    input() 
     ball_x, ball_y = map(float, input().split())
     arquero_x, arquero_y, radioarquero = map(float, input().split())
     if isgoal(ball_x, ball_y, arquero_x, arquero_y, radioarquero):

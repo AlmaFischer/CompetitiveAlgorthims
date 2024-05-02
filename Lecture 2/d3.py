@@ -1,33 +1,70 @@
-def intersection(x1, y1, x2, y2, r):
-    return (x2 - x1)**2 + (y2 - y1)**2 <= r**2
+import math
+
+DEBUG = False
+
+def intersection(X1, Y1, X2, Y2, R):
+    # check if goalie is in the way of the ball
+    if X1 < 0.0:
+        return False
+    dx = X2 - X1
+    dy = Y2 - Y1
+    return dx*dx + dy*dy <= R*R
 
 def main():
     T = int(input())
     for _ in range(T):
         input()
-        ball_x, ball_y  = map(float, input().split())
-        goalie_x, goalie_y, goalie_rad = map(float, input().split())
-        net_x = 52.50 - ball_x
-        net_y1, net_y2 = (3.66 - ball_y), (-3.66 - ball_y)
-        goalie_x -= ball_x
-        goalie_y -= ball_y
+        ballX, ballY = map(float, input().split())
+        goalieX, goalieY, goalieRad = map(float, input().split())
+        shiftX = ballX
+        shiftY = ballY
+        netX = 52.50 - shiftX
+        netY1 = 3.66 - shiftY
+        netY2 = -3.66 - shiftY
+        ballX = 0.0
+        ballY = 0.0
+        goalieX -= shiftX
+        goalieY -= shiftY
+        slope1 = netY1 / netX if netX != 0 else 0
+        slope2 = netY2 / netX if netX != 0 else 0
 
-        slopes = [net_y1 / net_x if net_x != 0 else 0, net_y2 / net_x if net_x != 0 else 0]
-        ball_slopes = [-net_x / net_y if net_y != 0 else 0 for net_y in [net_y1, net_y2]]
-        bs = [goalie_y - ball_slopes[i] * goalie_x for i in range(2)]
-        points = [(bs[i] / (slopes[i] - ball_slopes[i]), ball_slopes[i] * bs[i] / (slopes[i] - ball_slopes[i])) if slopes[i] != ball_slopes[i] else (goalie_x, goalie_y) for i in range(2)]
+        # perpendicular slope of line from center of circle to lines
+        slopeBall1 = -netX / netY1 if netY1 != 0 else 0
+        slopeBall2 = -netX / netY2 if netY2 != 0 else 0
 
-        for i in range(2):
-            if net_y1 == 0 and i == 0:
-                points[i] = (goalie_x, 0)
-            elif net_y2 == 0 and i == 1:
-                points[i] = (goalie_x, 0)
-            elif net_x == 0 and goalie_x == 0:
-                points[i] = (0, ball_y if (ball_y < net_y2 and goalie_y > net_y2) or (ball_y > net_y1 and goalie_y < net_y1) else goalie_y)
-            elif net_x == 0:
-                points[i] = (0, goalie_y)
+        # find equation of lines given the above slopes
+        b1 = goalieY - slopeBall1 * goalieX
+        b2 = goalieY - slopeBall2 * goalieX
 
-        if intersection(*points[0], goalie_x, goalie_y, goalie_rad) and intersection(*points[1], goalie_x, goalie_y, goalie_rad) or intersection(ball_x, ball_y, goalie_x, goalie_y, goalie_rad):
+        # find point of intersection
+        x1 = b1 / (slope1 - slopeBall1) if slope1 != slopeBall1 else goalieX
+        x2 = b2 / (slope2 - slopeBall2) if slope2 != slopeBall2 else goalieX
+        y1 = slopeBall1 * x1 + b1
+        y2 = slopeBall2 * x2 + b2
+
+        if netY1 == 0:
+            x1 = goalieX
+            y1 = 0
+        if netY2 == 0:
+            x2 = goalieX
+            y2 = 0
+        if netX == 0 and goalieX == 0:
+            x1 = x2 = 0
+            if (ballY < netY2 and goalieY > netY2) or (ballY > netY1 and goalieY < netY1):
+                y1 = y2 = ballY
+            else:
+                y1 = y2 = goalieY
+        elif netX == 0:
+            x1 = x2 = 0
+            y1 = y2 = goalieY
+
+
+        # check if point of intersection is within radius of the goalie
+        intersec1 = intersection(x1, y1, goalieX, goalieY, goalieRad)
+        intersec2 = intersection(x2, y2, goalieX, goalieY, goalieRad)
+        intersec3 = intersection(ballX, ballY, goalieX, goalieY, goalieRad)
+
+        if intersec1 and intersec2 or intersec3:
             print("No goal...")
         else:
             print("Goal!")
